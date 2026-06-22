@@ -18,7 +18,7 @@ Custom domain: https://legal.majesticmade.dev/
 - `paws/` for Paws
 - `range/` for Range
 - `reach-me/` for ReachMe
-- `ridebinder/` for RideBinder
+- `ride-binder/` for RideBinder
 - `room-proof/` for RoomProof
 - `routine-cue/` for RoutineCue
 - `steward/` for Steward
