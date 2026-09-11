@@ -15,8 +15,8 @@ jobs:
       - uses: actions/checkout@v5
       - name: Require substantive active-product pages
         run: |
-          test -z "$(grep -RIlE 'Draft placeholder|Replace this paragraph|reserved for the' apiary reach-me ride-binder routine-cue || true)"
-          for product in apiary reach-me ride-binder routine-cue; do
+          test -z "$(grep -RIlE 'Draft placeholder|Replace this paragraph|reserved for the' apiary reach-me ride-binder routine-cue paws almanac use-by || true)"
+          for product in apiary reach-me ride-binder routine-cue paws almanac use-by; do
             test -s "$product/privacy/index.html"
             test -s "$product/terms/index.html"
             test -s "$product/support/index.html"
