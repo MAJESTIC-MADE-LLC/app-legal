@@ -31,4 +31,7 @@ Each app folder contains:
 - `terms/index.html`
 - `support/index.html`
 
-Replace placeholder copy before using a page in App Store Connect, Google Play, or production app config.
+Apiary, ReachMe, RideBinder, and RoutineCue have product-specific working drafts based on their
+current implementations. Have qualified counsel review and approve them, then reconcile them with
+the final release build and store disclosure forms before launch. Other app folders remain
+placeholders and must not be used for production.
