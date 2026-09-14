@@ -12,6 +12,9 @@ from urllib.parse import unquote, urlsplit
 BASE_URL = "https://legal.majesticmade.dev"
 PAGE_KINDS = ("privacy", "terms", "support")
 VALID_STATUSES = {"active", "placeholder"}
+ALLOWED_LINK_SCHEMES = {"https", "mailto"}
+DISALLOWED_ACTIVE_TAGS = {"base", "embed", "form", "iframe", "object", "script"}
+SUPPORT_MAILTO = "mailto:support@majesticmade.dev"
 PLACEHOLDER_MARKERS = (
     "draft placeholder",
     "replace this paragraph",
@@ -29,12 +32,21 @@ class ParsedPage(HTMLParser):
         self.stylesheets: list[str] = []
         self.text: list[str] = []
         self.headings: dict[str, list[str]] = {"h1": [], "h2": []}
+        self.active_content: list[str] = []
         self._heading: str | None = None
         self._heading_text: list[str] = []
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         self.tags.add(tag)
         attributes = dict(attrs)
+        if tag in DISALLOWED_ACTIVE_TAGS:
+            self.active_content.append(f"<{tag}>")
+        if tag == "meta" and (attributes.get("http-equiv") or "").lower() == "refresh":
+            self.active_content.append("meta refresh")
+        for name, _ in attrs:
+            lowered_name = name.lower()
+            if lowered_name.startswith("on") or lowered_name == "srcdoc":
+                self.active_content.append(f"{tag}[{name}]")
         if tag == "a" and attributes.get("href") is not None:
             self.links.append(attributes["href"] or "")
         if tag == "link":
@@ -90,7 +102,7 @@ def _validate_page(
     expected_canonical: str,
     expected_stylesheet: str,
     *,
-    active: bool,
+    active: bool | None,
     kind: str | None,
     expected_name: str | None = None,
 ) -> list[str]:
@@ -120,6 +132,11 @@ def _validate_page(
         )
     if expected_stylesheet not in parsed.stylesheets:
         errors.append(f"{display}: missing stylesheet {expected_stylesheet!r}")
+    if parsed.active_content:
+        errors.append(
+            f"{display}: disallowed active content: "
+            f"{', '.join(sorted(set(parsed.active_content)))}"
+        )
     if not parsed.headings["h1"]:
         errors.append(f"{display}: missing non-empty h1")
     elif expected_name is not None and not any(
@@ -127,7 +144,34 @@ def _validate_page(
     ):
         errors.append(f"{display}: h1 does not identify {expected_name!r}")
 
-    for href in parsed.links + parsed.stylesheets:
+    for href in parsed.links:
+        parsed_href = urlsplit(href)
+        scheme = parsed_href.scheme.lower()
+        if parsed_href.netloc and not scheme:
+            errors.append(f"{display}: scheme-relative link is not allowed: {href!r}")
+            continue
+        if scheme not in ALLOWED_LINK_SCHEMES and scheme:
+            errors.append(f"{display}: unsafe link scheme is not allowed: {href!r}")
+            continue
+        if scheme == "mailto" and href.lower() != SUPPORT_MAILTO:
+            errors.append(f"{display}: unexpected support address: {href!r}")
+            continue
+        target = _expected_file(root, path, href)
+        if target is None:
+            continue
+        try:
+            target.relative_to(root.resolve())
+        except ValueError:
+            errors.append(f"{display}: local link escapes the site root: {href!r}")
+            continue
+        if not target.is_file():
+            errors.append(f"{display}: broken local link {href!r}")
+
+    for href in parsed.stylesheets:
+        parsed_href = urlsplit(href)
+        if parsed_href.scheme or parsed_href.netloc:
+            errors.append(f"{display}: stylesheet must be local: {href!r}")
+            continue
         target = _expected_file(root, path, href)
         if target is None:
             continue
@@ -140,11 +184,11 @@ def _validate_page(
             errors.append(f"{display}: broken local link {href!r}")
 
     has_placeholder = any(marker in lowered for marker in PLACEHOLDER_MARKERS)
-    if active and has_placeholder:
+    if active is True and has_placeholder:
         errors.append(f"{display}: active product still contains placeholder copy")
-    if kind is not None and not active and not has_placeholder:
+    if active is False and not has_placeholder:
         errors.append(f"{display}: placeholder status is missing a placeholder warning")
-    if active and kind in PAGE_KINDS:
+    if active is True and kind in PAGE_KINDS:
         if "support@majesticmade.dev" not in lowered:
             errors.append(f"{display}: active legal page is missing the support address")
         minimum_sections = 3 if kind == "support" else 4
@@ -220,7 +264,7 @@ def validate(root: Path) -> list[str]:
             root_page,
             f"{BASE_URL}/",
             "assets/site.css",
-            active=True,
+            active=None,
             kind=None,
         )
     )

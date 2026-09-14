@@ -61,6 +61,49 @@ class LegalPageValidationTests(unittest.TestCase):
         )
         self.assert_has_error("active product still contains placeholder copy")
 
+    def test_placeholder_landing_page_without_warning_is_rejected(self) -> None:
+        path = self.root / "bivy/index.html"
+        path.write_text(
+            path.read_text().replace("Draft placeholder", "Legal and Support"),
+            encoding="utf-8",
+        )
+        self.assert_has_error("placeholder status is missing a placeholder warning")
+
+    def test_base_element_is_rejected(self) -> None:
+        path = self.root / "apiary/index.html"
+        path.write_text(
+            path.read_text().replace("</head>", '<base href="https://example.com/">\n  </head>'),
+            encoding="utf-8",
+        )
+        self.assert_has_error("disallowed active content: <base>")
+
+    def test_inline_event_handler_is_rejected(self) -> None:
+        path = self.root / "apiary/index.html"
+        path.write_text(
+            path.read_text().replace("<body>", '<body onload="alert(1)">'),
+            encoding="utf-8",
+        )
+        self.assert_has_error("disallowed active content: body[onload]")
+
+    def test_unsafe_link_scheme_is_rejected(self) -> None:
+        path = self.root / "apiary/index.html"
+        path.write_text(
+            path.read_text().replace('href="privacy/"', 'href="javascript:alert(1)"'),
+            encoding="utf-8",
+        )
+        self.assert_has_error("unsafe link scheme is not allowed")
+
+    def test_remote_stylesheet_is_rejected(self) -> None:
+        path = self.root / "apiary/index.html"
+        path.write_text(
+            path.read_text().replace(
+                "</head>",
+                '<link rel="stylesheet" href="https://example.com/site.css">\n  </head>',
+            ),
+            encoding="utf-8",
+        )
+        self.assert_has_error("stylesheet must be local")
+
     def test_uninventoried_app_folder_is_rejected(self) -> None:
         shutil.copytree(self.root / "bivy", self.root / "untracked-app")
         self.assert_has_error("site folders missing from inventory: untracked-app")
