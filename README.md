@@ -31,10 +31,10 @@ Each app folder contains:
 - `terms/index.html`
 - `support/index.html`
 
-Apiary, ReachMe, RideBinder, RoutineCue, Paws, Almanac, and Use By have product-specific working
-drafts based on their current implementations. Have qualified counsel review and approve them,
-then reconcile them with the final release builds and store disclosure forms before launch. Other
-app folders remain placeholders and must not be used for production.
+Almanac, Apiary, Majestic-Made-Hub, Paws, ReachMe, RideBinder, RoutineCue, and Use By have
+product-specific working drafts based on their current implementations. Have qualified counsel
+review and approve them, then reconcile them with the final release builds and store disclosure
+forms before launch. Other app folders remain placeholders and must not be used for production.
 
 `legal-pages.json` is the canonical inventory and readiness classification. Run
 `./scripts/validate_legal_pages.py` and `python -m unittest discover -s tests -v` before pushing;
