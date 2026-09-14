@@ -35,3 +35,7 @@ Apiary, ReachMe, RideBinder, RoutineCue, Paws, Almanac, and Use By have product-
 drafts based on their current implementations. Have qualified counsel review and approve them,
 then reconcile them with the final release builds and store disclosure forms before launch. Other
 app folders remain placeholders and must not be used for production.
+
+`legal-pages.json` is the canonical inventory and readiness classification. Run
+`./scripts/validate_legal_pages.py` and `python -m unittest discover -s tests -v` before pushing;
+CI rejects missing pages, broken local links, invalid canonical URLs, and readiness/placeholder drift.

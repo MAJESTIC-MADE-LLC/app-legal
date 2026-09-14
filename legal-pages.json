@@ -1,0 +1,20 @@
+[
+  {"slug": "almanac", "name": "Almanac", "status": "active"},
+  {"slug": "apiary", "name": "Apiary", "status": "active"},
+  {"slug": "bivy", "name": "Bivy", "status": "placeholder"},
+  {"slug": "chat-armor", "name": "Chat-Armor", "status": "placeholder"},
+  {"slug": "convoy", "name": "Convoy", "status": "placeholder"},
+  {"slug": "cradle", "name": "Cradle", "status": "placeholder"},
+  {"slug": "deep-six", "name": "Deep-Six", "status": "placeholder"},
+  {"slug": "hook", "name": "Hook", "status": "placeholder"},
+  {"slug": "majestic-made-hub", "name": "Majestic-Made-Hub", "status": "placeholder"},
+  {"slug": "paws", "name": "Paws", "status": "active"},
+  {"slug": "range", "name": "Range", "status": "placeholder"},
+  {"slug": "reach-me", "name": "ReachMe", "status": "active"},
+  {"slug": "ride-binder", "name": "RideBinder", "status": "active"},
+  {"slug": "room-proof", "name": "RoomProof", "status": "placeholder"},
+  {"slug": "routine-cue", "name": "RoutineCue", "status": "active"},
+  {"slug": "steward", "name": "Steward", "status": "placeholder"},
+  {"slug": "trove", "name": "Trove", "status": "placeholder"},
+  {"slug": "use-by", "name": "Use By", "status": "active"}
+]

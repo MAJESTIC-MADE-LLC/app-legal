@@ -9,15 +9,12 @@ permissions:
   contents: read
 
 jobs:
-  active-products:
+  legal-pages:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - name: Require substantive active-product pages
-        run: |
-          test -z "$(grep -RIlE 'Draft placeholder|Replace this paragraph|reserved for the' apiary reach-me ride-binder routine-cue paws almanac use-by || true)"
-          for product in apiary reach-me ride-binder routine-cue paws almanac use-by; do
-            test -s "$product/privacy/index.html"
-            test -s "$product/terms/index.html"
-            test -s "$product/support/index.html"
-          done
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+      - run: python -m unittest discover -s tests -v
+      - run: ./scripts/validate_legal_pages.py
