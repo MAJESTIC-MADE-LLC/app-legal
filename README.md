@@ -58,8 +58,8 @@ a fixed immediate meta refresh, a current canonical URL, and a visible fallback 
 GitHub Pages returns those HTML pages with HTTP 200; the browser forwards visitors.
 No script or query-driven redirect is used. Preserve these pages for old bookmarks.
 
-GitHub Actions validation runs only on a push to `main` or a manual run targeting
-`main`. Run development checks locally to conserve Actions usage. Pages' managed
+GitHub Actions validation runs only on a push to `main`.
+Run development checks locally to conserve Actions usage. Pages' managed
 publication follows the configured `main` source.
 
 ## Validation
