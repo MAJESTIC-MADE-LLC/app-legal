@@ -100,6 +100,26 @@ p, li { font-size: 1rem; }
 
 .panel h2:first-child { margin-top: 0; }
 
+.notice {
+  background: #edf5f0;
+  border: 1px solid #bed5c9;
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  margin: 24px 0;
+  padding: 18px 22px;
+}
+
+.notice p { margin: 6px 0 0; }
+
+.continue-link { font-weight: 700; }
+
+a:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}
+
+p, li, a { overflow-wrap: anywhere; }
+
 .link-grid {
   display: grid;
   gap: 14px;

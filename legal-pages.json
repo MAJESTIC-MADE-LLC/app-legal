@@ -1,20 +1,92 @@
 [
-  {"slug": "almanac", "name": "Almanac", "status": "active"},
-  {"slug": "apiary", "name": "Apiary", "status": "active"},
-  {"slug": "bivy", "name": "Bivy", "status": "placeholder"},
-  {"slug": "chat-armor", "name": "Chat-Armor", "status": "placeholder"},
-  {"slug": "convoy", "name": "Convoy", "status": "placeholder"},
-  {"slug": "cradle", "name": "Cradle", "status": "placeholder"},
-  {"slug": "deep-six", "name": "Deep-Six", "status": "placeholder"},
-  {"slug": "hook", "name": "Hook", "status": "placeholder"},
-  {"slug": "majestic-made-hub", "name": "Majestic-Made-Hub", "status": "active"},
-  {"slug": "paws", "name": "Paws", "status": "active"},
-  {"slug": "range", "name": "Range", "status": "placeholder"},
-  {"slug": "reach-me", "name": "ReachMe", "status": "active"},
-  {"slug": "ride-binder", "name": "RideBinder", "status": "active"},
-  {"slug": "room-proof", "name": "RoomProof", "status": "placeholder"},
-  {"slug": "routine-cue", "name": "RoutineCue", "status": "active"},
-  {"slug": "steward", "name": "Steward", "status": "placeholder"},
-  {"slug": "trove", "name": "Trove", "status": "placeholder"},
-  {"slug": "use-by", "name": "Use By", "status": "active"}
+  {
+    "slug": "fine-notes",
+    "name": "Fine Notes",
+    "status": "active"
+  },
+  {
+    "slug": "skepbook",
+    "name": "Skepbook",
+    "status": "active"
+  },
+  {
+    "slug": "campsake",
+    "name": "Campsake",
+    "status": "concept"
+  },
+  {
+    "slug": "kinwall",
+    "name": "Kinwall",
+    "status": "concept"
+  },
+  {
+    "slug": "claim-crate",
+    "name": "Claim Crate",
+    "status": "concept"
+  },
+  {
+    "slug": "tender-days",
+    "name": "Tender Days",
+    "status": "concept"
+  },
+  {
+    "slug": "divefolio",
+    "name": "Divefolio",
+    "status": "concept"
+  },
+  {
+    "slug": "creelmark",
+    "name": "Creelmark",
+    "status": "concept"
+  },
+  {
+    "slug": "majestic-made-hub",
+    "name": "Majestic-Made-Hub",
+    "status": "active"
+  },
+  {
+    "slug": "paws",
+    "name": "Paws",
+    "status": "active"
+  },
+  {
+    "slug": "brassmark",
+    "name": "Brassmark",
+    "status": "concept"
+  },
+  {
+    "slug": "namefold",
+    "name": "Namefold",
+    "status": "active"
+  },
+  {
+    "slug": "ridelore",
+    "name": "Ridelore",
+    "status": "active"
+  },
+  {
+    "slug": "turnstamp",
+    "name": "Turnstamp",
+    "status": "concept"
+  },
+  {
+    "slug": "daymerit",
+    "name": "Daymerit",
+    "status": "active"
+  },
+  {
+    "slug": "what-we-own",
+    "name": "What We Own",
+    "status": "concept"
+  },
+  {
+    "slug": "object-lore",
+    "name": "Object Lore",
+    "status": "concept"
+  },
+  {
+    "slug": "pantry-clock",
+    "name": "Pantry Clock",
+    "status": "active"
+  }
 ]

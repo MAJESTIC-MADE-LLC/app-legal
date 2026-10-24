@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 from html.parser import HTMLParser
 from pathlib import Path
@@ -11,7 +12,13 @@ from urllib.parse import unquote, urlsplit
 
 BASE_URL = "https://legal.majesticmade.dev"
 PAGE_KINDS = ("privacy", "terms", "support")
-VALID_STATUSES = {"active", "placeholder"}
+VALID_STATUSES = {"active", "concept"}
+SAFE_SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
+RESERVED_SLUGS = {"assets", "scripts", "tests"}
+VOID_TAGS = {
+    "area", "base", "br", "col", "embed", "hr", "img", "input", "link",
+    "meta", "param", "source", "track", "wbr",
+}
 ALLOWED_LINK_SCHEMES = {"https", "mailto"}
 DISALLOWED_ACTIVE_TAGS = {"base", "embed", "form", "iframe", "object", "script"}
 SUPPORT_MAILTO = "mailto:support@majesticmade.dev"
@@ -33,22 +40,46 @@ class ParsedPage(HTMLParser):
         self.text: list[str] = []
         self.headings: dict[str, list[str]] = {"h1": [], "h2": []}
         self.active_content: list[str] = []
+        self.refreshes: list[str | None] = []
+        self.visible_links: set[str] = set()
+        self._elements: list[tuple[str, bool]] = []
+        self._in_body = False
+        self._anchor: str | None = None
+        self._anchor_text: list[str] = []
         self._heading: str | None = None
         self._heading_text: list[str] = []
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         self.tags.add(tag)
         attributes = dict(attrs)
+        if len(attributes) != len(attrs):
+            self.active_content.append(f"{tag}[duplicate attributes]")
+        if tag == "body":
+            self._in_body = True
+        style = re.sub(r"\s+", "", attributes.get("style") or "").lower()
+        hidden = (
+            (self._elements[-1][1] if self._elements else False)
+            or tag in {"head", "script", "style", "template"}
+            or "hidden" in attributes
+            or (attributes.get("aria-hidden") or "").lower() == "true"
+            or "display:none" in style
+            or "visibility:hidden" in style
+        )
+        if tag not in VOID_TAGS:
+            self._elements.append((tag, hidden))
         if tag in DISALLOWED_ACTIVE_TAGS:
             self.active_content.append(f"<{tag}>")
-        if tag == "meta" and (attributes.get("http-equiv") or "").lower() == "refresh":
-            self.active_content.append("meta refresh")
+        if tag == "meta" and (attributes.get("http-equiv") or "").strip().lower() == "refresh":
+            self.refreshes.append(attributes.get("content"))
         for name, _ in attrs:
             lowered_name = name.lower()
             if lowered_name.startswith("on") or lowered_name == "srcdoc":
                 self.active_content.append(f"{tag}[{name}]")
         if tag == "a" and attributes.get("href") is not None:
             self.links.append(attributes["href"] or "")
+            if self._in_body and not hidden:
+                self._anchor = attributes["href"] or ""
+                self._anchor_text = []
         if tag == "link":
             relationships = set((attributes.get("rel") or "").split())
             href = attributes.get("href")
@@ -56,11 +87,22 @@ class ParsedPage(HTMLParser):
                 self.canonicals.append(href)
             if href is not None and "stylesheet" in relationships:
                 self.stylesheets.append(href)
-        if tag in self.headings:
+        if tag in self.headings and self._in_body and not hidden:
             self._heading = tag
             self._heading_text = []
 
     def handle_endtag(self, tag: str) -> None:
+        if tag == "a" and self._anchor is not None:
+            if " ".join(self._anchor_text).strip():
+                self.visible_links.add(self._anchor)
+            self._anchor = None
+            self._anchor_text = []
+        for index in range(len(self._elements) - 1, -1, -1):
+            if self._elements[index][0] == tag:
+                del self._elements[index:]
+                break
+        if tag == "body":
+            self._in_body = False
         if self._heading == tag:
             heading = " ".join(self._heading_text).strip()
             if heading:
@@ -70,8 +112,10 @@ class ParsedPage(HTMLParser):
 
     def handle_data(self, data: str) -> None:
         value = data.strip()
-        if value:
+        if value and self._in_body and not (self._elements and self._elements[-1][1]):
             self.text.append(value)
+            if self._anchor is not None:
+                self._anchor_text.append(value)
             if self._heading is not None:
                 self._heading_text.append(value)
 
@@ -105,6 +149,7 @@ def _validate_page(
     active: bool | None,
     kind: str | None,
     expected_name: str | None = None,
+    alias: bool = False,
 ) -> list[str]:
     display = path.relative_to(root).as_posix()
     if not path.is_file():
@@ -132,6 +177,11 @@ def _validate_page(
         )
     if expected_stylesheet not in parsed.stylesheets:
         errors.append(f"{display}: missing stylesheet {expected_stylesheet!r}")
+    expected_refreshes = [f"0;url={expected_canonical}"] if alias else []
+    if parsed.refreshes != expected_refreshes:
+        errors.append(f"{display}: unexpected meta refresh; expected {expected_refreshes!r}")
+    if alias and expected_canonical not in parsed.visible_links:
+        errors.append(f"{display}: alias needs a visible link to {expected_canonical!r}")
     if parsed.active_content:
         errors.append(
             f"{display}: disallowed active content: "
@@ -183,21 +233,29 @@ def _validate_page(
         if not target.is_file():
             errors.append(f"{display}: broken local link {href!r}")
 
-    has_placeholder = any(marker in lowered for marker in PLACEHOLDER_MARKERS)
-    if active is True and has_placeholder:
-        errors.append(f"{display}: active product still contains placeholder copy")
-    if active is False and not has_placeholder:
-        errors.append(f"{display}: placeholder status is missing a placeholder warning")
-    if active is True and kind in PAGE_KINDS:
-        if "support@majesticmade.dev" not in lowered:
-            errors.append(f"{display}: active legal page is missing the support address")
+    has_placeholder = any(marker in lowered for marker in PLACEHOLDER_MARKERS) or bool(
+        re.search(r"\bTODO\b", source, re.IGNORECASE)
+    )
+    if not alias and has_placeholder:
+        label = (
+            "active product still contains placeholder copy"
+            if active is True else "unfinished placeholder copy"
+        )
+        errors.append(f"{display}: {label}")
+    if active is False and not alias:
+        visible_text = text.lower()
+        if "pre-release" not in visible_text or "not released" not in visible_text:
+            errors.append(f"{display}: concept needs visible Pre-release and not released notices")
+    if active is not None and kind in PAGE_KINDS and not alias:
+        if SUPPORT_MAILTO not in parsed.visible_links:
+            errors.append(f"{display}: legal page is missing the visible support address")
         minimum_sections = 3 if kind == "support" else 4
         if len(parsed.headings["h2"]) < minimum_sections:
             errors.append(
-                f"{display}: active {kind} page needs at least {minimum_sections} sections"
+                f"{display}: {kind} page needs at least {minimum_sections} sections"
             )
         if kind in {"privacy", "terms"} and "last updated" not in text.lower():
-            errors.append(f"{display}: active {kind} page is missing an updated date")
+            errors.append(f"{display}: {kind} page is missing an updated date")
     return errors
 
 
@@ -226,7 +284,7 @@ def validate(root: Path) -> list[str]:
         slug = raw.get("slug")
         name = raw.get("name")
         status = raw.get("status")
-        if not isinstance(slug, str) or not slug or slug in {"assets", "scripts", "tests"}:
+        if not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug) or slug in RESERVED_SLUGS:
             errors.append(f"legal-pages.json: entry {index} has an invalid slug")
             continue
         if slug in seen:
@@ -241,6 +299,43 @@ def validate(root: Path) -> list[str]:
             continue
         entries.append({"slug": slug, "name": name, "status": status})
 
+    aliases: dict[str, str] = {}
+    legacy_path = root / "legacy-urls.json"
+    if not legacy_path.is_file():
+        errors.append("legacy-urls.json: missing legacy URL map")
+    else:
+        try:
+            def unique_keys(pairs: list[tuple[str, object]]) -> dict[str, object]:
+                result: dict[str, object] = {}
+                for key, value in pairs:
+                    if key in result:
+                        raise ValueError(f"duplicate legacy slug {key!r}")
+                    result[key] = value
+                return result
+
+            legacy = json.loads(
+                legacy_path.read_text(encoding="utf-8"), object_pairs_hook=unique_keys
+            )
+            if not isinstance(legacy, dict):
+                errors.append("legacy-urls.json: top-level value must be an object")
+            else:
+                valid_canonicals = {entry["slug"] for entry in entries}
+                for old_slug, target in legacy.items():
+                    if not SAFE_SLUG.fullmatch(old_slug) or old_slug in RESERVED_SLUGS:
+                        errors.append(f"legacy-urls.json: unsafe legacy slug {old_slug!r}")
+                    elif old_slug in seen:
+                        errors.append(f"legacy-urls.json: legacy slug is already canonical: {old_slug!r}")
+                    elif (
+                        not isinstance(target, str)
+                        or not SAFE_SLUG.fullmatch(target)
+                        or target not in valid_canonicals
+                    ):
+                        errors.append(f"legacy-urls.json: unknown canonical target for {old_slug!r}: {target!r}")
+                    else:
+                        aliases[old_slug] = target
+        except (ValueError, UnicodeDecodeError) as error:
+            errors.append(f"legacy-urls.json: invalid JSON: {error}")
+
     discovered = {
         child.name
         for child in root.iterdir()
@@ -249,9 +344,10 @@ def validate(root: Path) -> list[str]:
         and child.name not in {"assets", "scripts", "tests"}
         and (child / "index.html").is_file()
     }
-    if seen != discovered:
-        missing = sorted(seen - discovered)
-        extra = sorted(discovered - seen)
+    expected_folders = seen | set(aliases)
+    if expected_folders != discovered:
+        missing = sorted(expected_folders - discovered)
+        extra = sorted(discovered - expected_folders)
         if missing:
             errors.append(f"inventory folders missing from site: {', '.join(missing)}")
         if extra:
@@ -268,9 +364,9 @@ def validate(root: Path) -> list[str]:
             kind=None,
         )
     )
-    _, site_index = _parse(root_page)
-    index_links = set(site_index.links)
-    readme = (root / "README.md").read_text(encoding="utf-8")
+    index_links = set(_parse(root_page)[1].links) if root_page.is_file() else set()
+    readme_path = root / "README.md"
+    readme = readme_path.read_text(encoding="utf-8") if readme_path.is_file() else ""
 
     for entry in entries:
         slug = entry["slug"]
@@ -300,6 +396,23 @@ def validate(root: Path) -> list[str]:
                     active=active,
                     kind=kind,
                     expected_name=entry["name"],
+                )
+            )
+    for old_slug, target in aliases.items():
+        for kind in (None, *PAGE_KINDS):
+            suffix = f"{kind}/" if kind is not None else ""
+            target_path = root / target / suffix / "index.html"
+            if not target_path.is_file():
+                errors.append(f"{old_slug}/{suffix}index.html: alias target is missing: {target}/{suffix}")
+            errors.extend(
+                _validate_page(
+                    root,
+                    root / old_slug / suffix / "index.html",
+                    f"{BASE_URL}/{target}/{suffix}",
+                    "../../assets/site.css" if kind else "../assets/site.css",
+                    active=None,
+                    kind=kind,
+                    alias=True,
                 )
             )
     return errors
