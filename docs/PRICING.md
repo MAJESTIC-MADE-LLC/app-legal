@@ -32,3 +32,10 @@ remains paused. Follow the [canonical portfolio pricing policy](https://github.c
 - Existing records remain readable; basic export and encrypted backup/recovery stay accessible when paid access lapses. The subscription may gate new records and premium actions; exact preview and renewal behavior requires each product's implementation and store qualification.
 - Current native builds largely still implement permanent-unlock adapters. This documentation does not migrate billing, provision store SKUs, test subscription renewal/offline grace, or publish an app. Final checkout, localized prices, tax, cancellation, restore and refund disclosures must match the qualified subscription build before launch.
 - Namefold's free browser generator is separate from paid native access. Lockbox and Quiet Arcade have no legal-site product policies yet; their links above point to the central policy instead. Kinwall has no approved feature set or release slot; its price is provisional only.
+
+## November 4 implementation status
+
+Skepbook, Ridelore, Paws, Pantry Clock, Fine Notes, Namefold and Daymerit now implement
+native monthly/annual subscription source and the separate 14-day local trial. Their terms
+reflect expiration, historical ownership and data/recovery rights. Store provisioning, signed
+transactions and device qualification remain pending; concept products remain planning only.
