@@ -168,6 +168,17 @@ class LegalPageValidationTests(unittest.TestCase):
         self.assertNotIn("does not intentionally set cookies", privacy)
         self.assertNotIn("Stripe", privacy)
 
+    def test_claim_crate_is_consolidated_with_direct_legacy_routes(self) -> None:
+        inventory = json.loads((self.root / "legal-pages.json").read_text())
+        self.assertNotIn("claim-crate", {entry["slug"] for entry in inventory})
+        aliases = json.loads((self.root / "legacy-urls.json").read_text())
+        for old in ("claim-crate", "convoy"):
+            self.assertEqual(aliases[old], "what-we-own")
+            for suffix in ("", "privacy/", "terms/", "support/"):
+                content = (self.root / old / suffix / "index.html").read_text()
+                self.assertIn(f"0;url=https://legal.majesticmade.dev/what-we-own/{suffix}", content)
+                self.assertIn("condition evidence", content)
+
     def test_missing_legacy_alias_is_rejected(self) -> None:
         (self.root / "almanac/privacy/index.html").unlink()
         self.assert_has_error("almanac/privacy/index.html: missing page")

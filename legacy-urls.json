@@ -3,7 +3,7 @@
   "apiary": "skepbook",
   "bivy": "campsake",
   "chat-armor": "kinwall",
-  "convoy": "claim-crate",
+  "convoy": "what-we-own",
   "cradle": "tender-days",
   "deep-six": "divefolio",
   "hook": "creelmark",
@@ -14,5 +14,6 @@
   "routine-cue": "daymerit",
   "steward": "what-we-own",
   "trove": "object-lore",
-  "use-by": "pantry-clock"
+  "use-by": "pantry-clock",
+  "claim-crate": "what-we-own"
 }

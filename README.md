@@ -26,7 +26,6 @@ The hosting instructions below describe the configuration to restore at relaunch
 - `skepbook/` for Skepbook
 - `campsake/` for Campsake
 - `kinwall/` for Kinwall
-- `claim-crate/` for Claim Crate
 - `tender-days/` for Tender Days
 - `divefolio/` for Divefolio
 - `creelmark/` for Creelmark
@@ -53,7 +52,7 @@ migrations; some still describe superseded cloud accounts, managed links, or Rev
 Reconcile every draft with the final native binary before publication. The Majestic-Made-Hub
 pages describe the retained website/form implementation and also require final review.
 
-The other ten products have pre-release information and contact pages. They do not
+The other nine products have pre-release information and contact pages. They do not
 claim that an app is available or invent collection, account, purchase, or subscription
 behavior. These pages are retained destinations for future portfolio links, not final policies
 for a released app. Have the founders and qualified counsel review final product
@@ -69,7 +68,7 @@ When explicitly restored, GitHub Pages is configured to serve `main` at the cust
 new hosting service, paid plan, mail backend, or server is required. Work on `dev`
 and obtain explicit approval before promoting changes to `main`.
 
-`legacy-urls.json` maps the sixteen previous product slugs to their current names.
+`legacy-urls.json` maps seventeen previous product slugs (including the consolidated Claim Crate name) to their current names.
 Each old landing, privacy, terms, and support URL has a static forwarding page with
 a fixed immediate meta refresh, a current canonical URL, and a visible fallback link.
 GitHub Pages returns those HTML pages with HTTP 200; the browser forwards visitors.
@@ -89,5 +88,11 @@ remain script-free; only mapped legacy pages may use the exact approved meta ref
 
 Preview locally with `python3 -m http.server 8773 --bind 127.0.0.1`, then check the
 directory, a product draft, a concept notice, website policies, and an old-name URL
-on desktop and mobile. After publication, verify all 54 canonical detail URLs plus
-18 product landings, the directory, and 64 legacy forwarding pages over HTTPS.
+on desktop and mobile. After publication, verify all 51 canonical detail URLs plus
+17 product landings, the directory, and 68 legacy forwarding pages over HTTPS.
+
+## Approved subscription targets — November 4, 2026
+
+See [the complete pricing matrix](docs/PRICING.md). Core paid app access is subscription-only;
+optional extra features may be one-time purchases. Current native permanent-unlock code still
+requires migration and store qualification. This documentation changes no live billing or publication.

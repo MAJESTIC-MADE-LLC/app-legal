@@ -17,7 +17,8 @@ and each application's own release gate. The October 24 publication pause remain
 
 This repository contains static legal/support pages, product-specific working drafts, concept
 notices, and fixed legacy-URL forwarding pages. Existing HTML describes prior/current
-implementations; the documentation update does not edit those pages or certify their adequacy.
+implementations; purchase terms now distinguish approved subscription targets from current billing
+code. This update does not certify legal adequacy.
 GitHub Pages remains disabled according to the retained publication-pause note; no service state
 is changed or independently reverified here.
 
@@ -31,8 +32,8 @@ is changed or independently reverified here.
 - Prioritize Skepbook's release documents first, then follow the canonical queue. Namefold's
   managed public links are deferred. Daymerit's local implementation is present and under
   qualification; its old cloud-facing drafts need reconciliation with the actual native build.
-- Plan What We Own/Claim Crate/Steward naming and policy redirects when migration actually occurs.
-  Keep current URLs, repository names, and fixed legacy mappings intact in this pass.
+- Preserve Claim Crate and Convoy policy URLs as fixed aliases to What We Own. No marketing
+  submissions or Steward hosting are migrated.
 - Do not change Dossier or OffRecord policies as part of this initiative. Kinwall has no release slot.
 
 ## Acceptance criteria
@@ -43,3 +44,16 @@ is changed or independently reverified here.
   Automated checks cannot establish legal adequacy.
 - Preserve the publication pause and main-only promotion policy. No other product's readiness
   blocks an independently approved release; shared dependencies are checked for that product.
+
+## Approved pricing and consolidation — November 4, 2026
+
+[Approved pricing](PRICING.md) supersedes earlier approved subscription targets. Core paid app access
+is subscription-only; optional extras may be sold once. Existing read/export/recovery access remains.
+Native billing migration and real-store subscription qualification remain pending; no live product,
+store configuration, service, or publication changes are made by this documentation.
+
+What We Own is the single home-and-moving inventory concept, including Claim Crate/PCS box
+records, QR labels, condition/damage evidence and selected claim-packet exports. Claim Crate is
+removed as an independent catalog/legal offering; former Claim Crate and Convoy URLs lead to
+What We Own. Historical waitlist source identifiers remain readable; no consent or signup records
+are migrated by this change. Steward remains retained marketing source until separately migrated.
