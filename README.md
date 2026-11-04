@@ -6,7 +6,7 @@ See [current implementation, approved direction, and next work](docs/PORTFOLIO_A
 The [canonical release queue](https://github.com/MAJESTIC-MADE-LLC/.github/blob/dev/portfolio/LAUNCH_SLATE.md) governs product order after the [shared foundation prerequisite](https://github.com/MAJESTIC-MADE-LLC/.github/blob/dev/portfolio/STACK_STANDARD.md). Each product then completes its own release approval.
 This documentation pass preserves existing implementations; it does not complete app fixes or authorize publication.
 
-Public privacy, terms, and support pages for Majestic Made apps.
+Source for Majestic Made privacy, terms, and support pages. Publication remains paused.
 
 Custom domain: https://legal.majesticmade.dev/
 
@@ -48,13 +48,14 @@ Each app folder contains:
 - `support/index.html`
 
 Fine Notes, Skepbook, Paws, Namefold, Ridelore, Daymerit, and Pantry Clock have
-product-specific working drafts based on their current implementations. Their pages
-visibly identify that status. The Majestic-Made-Hub pages describe the portfolio implementation,
-Cloudflare forms database, and private administrator dashboard. Publication remains paused.
+product-specific working drafts. These retained drafts predate the latest shared-foundation
+migrations; some still describe superseded cloud accounts, managed links, or RevenueCat billing.
+Reconcile every draft with the final native binary before publication. The Majestic-Made-Hub
+pages describe the retained website/form implementation and also require final review.
 
 The other ten products have pre-release information and contact pages. They do not
 claim that an app is available or invent collection, account, purchase, or subscription
-behavior. These pages are useful destinations for portfolio links, not final policies
+behavior. These pages are retained destinations for future portfolio links, not final policies
 for a released app. Have the founders and qualified counsel review final product
 policies, then reconcile them with release builds and store disclosures before launch.
 
