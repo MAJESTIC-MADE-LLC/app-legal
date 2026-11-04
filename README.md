@@ -1,8 +1,24 @@
 # Majestic Made App Legal Pages
 
+## Portfolio direction — November 3, 2026
+
+See [current implementation, approved direction, and next work](docs/PORTFOLIO_ALIGNMENT.md).
+The [canonical release queue](https://github.com/MAJESTIC-MADE-LLC/.github/blob/dev/portfolio/LAUNCH_SLATE.md) governs product order after the [shared foundation prerequisite](https://github.com/MAJESTIC-MADE-LLC/.github/blob/dev/portfolio/STACK_STANDARD.md). Each product then completes its own release approval.
+This documentation pass preserves existing implementations; it does not complete app fixes or authorize publication.
+
 Public privacy, terms, and support pages for Majestic Made apps.
 
 Custom domain: https://legal.majesticmade.dev/
+
+## Publication paused (2026-10-24)
+
+The founders requested that the whole Majestic website be taken offline until
+app listings and submissions are ready. GitHub Pages has been disabled for this
+repository; the source and branches are preserved. The custom domain's DNS is
+disconnected from GitHub Pages. The portfolio's Cloudflare Pages hosting is also
+unpublished. Do not re-enable publication without explicit founder approval.
+
+The hosting instructions below describe the configuration to restore at relaunch.
 
 ## App folders
 
@@ -33,8 +49,8 @@ Each app folder contains:
 
 Fine Notes, Skepbook, Paws, Namefold, Ridelore, Daymerit, and Pantry Clock have
 product-specific working drafts based on their current implementations. Their pages
-visibly identify that status. The Majestic-Made-Hub pages describe the live portfolio,
-Cloudflare forms database, and private administrator dashboard.
+visibly identify that status. The Majestic-Made-Hub pages describe the portfolio implementation,
+Cloudflare forms database, and private administrator dashboard. Publication remains paused.
 
 The other ten products have pre-release information and contact pages. They do not
 claim that an app is available or invent collection, account, purchase, or subscription
@@ -48,7 +64,7 @@ Neither classification certifies legal approval or app-store availability.
 
 ## Existing links and hosting
 
-The existing public GitHub Pages site serves `main` at the custom domain above. No
+When explicitly restored, GitHub Pages is configured to serve `main` at the custom domain above. No
 new hosting service, paid plan, mail backend, or server is required. Work on `dev`
 and obtain explicit approval before promoting changes to `main`.
 
