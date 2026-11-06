@@ -26,8 +26,9 @@ is changed or independently reverified here.
 
 - Reconcile policies and store disclosures with each actual binary during that app's release pass.
   Do not publish future local redesigns or permanent unlocks as implemented behavior.
-- Consumer personal records are local by default, with deliberate exports and later optional
-  user-owned hosting. Describe purchases, support contacts, and voluntary website submissions
+- Consumer personal records are local by default. Optional selected-record user-owned hosting is
+  implemented in Pantry Clock, Paws and Daymerit pre-release source; production qualification remains
+  pending and other product adoption is deferred. Describe purchases, support contacts, and voluntary website submissions
   separately; normal local operation must not acquire an undisclosed remote data flow.
 - Prioritize Skepbook's release documents first, then follow the canonical queue. Namefold's
   managed public links are deferred. Daymerit's local implementation is present and under
@@ -49,11 +50,11 @@ is changed or independently reverified here.
 
 [Approved pricing](PRICING.md) supersedes earlier approved subscription targets. Core paid app access
 is subscription-only; optional extras may be sold once. Existing read/export/recovery access remains.
-Native billing migration and real-store subscription qualification remain pending; no live product,
+All seven implemented apps now contain native monthly/annual subscriptions and a separate non-billing 14-day local trial. Real-store subscription qualification remains pending; no live product,
 store configuration, service, or publication changes are made by this documentation.
 
 What We Own is the single home-and-moving inventory concept, including Claim Crate/PCS box
 records, QR labels, condition/damage evidence and selected claim-packet exports. Claim Crate is
 removed as an independent catalog/legal offering; former Claim Crate and Convoy URLs lead to
 What We Own. Historical waitlist source identifiers remain readable; no consent or signup records
-are migrated by this change. Steward remains retained marketing source until separately migrated.
+are migrated by this change. Steward marketing and fresh What We Own signup source are consolidated in Hub; the old landing stack is archived. Live subscriber-list reconciliation, consent review and domain cutover remain pending.
